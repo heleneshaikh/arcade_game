@@ -15,6 +15,7 @@ Enemy.prototype = {
         if (this.x > 500) {
             this.x = -100;
         }
+
     },
     render: function () {
         ctx.drawImage(Resources.get(this.sprite), this.x, this.y);
@@ -34,7 +35,7 @@ var Player = function () {
 
 Player.prototype = {
     update: function (dt) {
-
+        player.collision();
     },
     render: function () {
         ctx.drawImage(Resources.get(this.sprite), this.x, this.y);
@@ -70,16 +71,23 @@ Player.prototype = {
                 }
                 break;
         }
+    },
+    collision: function () {
+        for (var i = 0; i < allEnemies.length; i++) {
+            if (allEnemies[i].x < this.x + 50 &&
+                allEnemies[i].x + 50 > this.x &&
+                allEnemies[i].y < this.y + 60 &&
+                40 + allEnemies[i].y > this.y) {
+                this.x = initialX;
+                this.y = initialY;
+            }
+        }
     }
 };
 
 var enemyOne = new Enemy(0, 65, randomize());
-console.log("one ", randomize());
 var enemyTwo = new Enemy(0, 145, randomize());
-console.log("two ", randomize());
 var enemyThree = new Enemy(0, 230, randomize());
-console.log("three ", randomize());
-
 var allEnemies = [enemyOne, enemyTwo, enemyThree];
 var player = new Player();
 
