@@ -5,17 +5,27 @@ var Enemy = function (startX, startY, speed) {
     this.sprite = 'images/enemy-bug.png';
 };
 
+var randomize = function () {
+    return Math.random() * (150 - 80) + 80;
+};
+
 Enemy.prototype = {
     update: function (dt) {
-        // this.x = this.x + this.speed * dt;
+        this.x = this.x + this.speed * dt;
+        if (this.x > 500) {
+            this.x = -100;
+        }
     },
     render: function () {
         ctx.drawImage(Resources.get(this.sprite), this.x, this.y);
     }
 };
 
-var initialX = 202;
+var initialX = 200;
 var initialY = 400;
+var maxLeft = 0;
+var maxRight = initialX * 2;
+
 var Player = function () {
     this.x = initialX;
     this.y = initialY;
@@ -30,26 +40,46 @@ Player.prototype = {
         ctx.drawImage(Resources.get(this.sprite), this.x, this.y);
     },
     handleInput: function (keyPressed) {
-      switch (keyPressed) {
-          case 'left':
-              this.x = this.x - 100;
-              break;
-          case 'up':
-              this.y = this.y - 100;
-              break;
-          case 'right':
-              this.x = this.x + 100;
-              break;
-          case 'down':
-              this.y = this.y + 100;
-              break;
-      }
+        switch (keyPressed) {
+            case 'left':
+                if (this.x == maxLeft) {
+                    this.x = maxLeft;
+                } else {
+                    this.x = this.x - 100;
+                }
+                break;
+            case 'up':
+                if (this.y < 10) {
+                    this.y = -50;
+                } else {
+                    this.y = this.y - 90;
+                }
+                break;
+            case 'right':
+                if (this.x == maxRight) {
+                    this.x = maxRight;
+                } else {
+                    this.x = this.x + 100;
+                }
+                break;
+            case 'down':
+                if (this.y == initialY) {
+                    this.y = initialY;
+                } else {
+                    this.y = this.y + 90;
+                }
+                break;
+        }
     }
 };
 
-var enemyOne = new Enemy(0, 65);
-var enemyTwo = new Enemy(0, 145);
-var enemyThree = new Enemy(0, 230);
+var enemyOne = new Enemy(0, 65, randomize());
+console.log("one ", randomize());
+var enemyTwo = new Enemy(0, 145, randomize());
+console.log("two ", randomize());
+var enemyThree = new Enemy(0, 230, randomize());
+console.log("three ", randomize());
+
 var allEnemies = [enemyOne, enemyTwo, enemyThree];
 var player = new Player();
 
