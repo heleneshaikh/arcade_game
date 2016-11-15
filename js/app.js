@@ -1,3 +1,4 @@
+/* The enemy constructors takes in the X and Y positions and the speed at which it should move */
 var Enemy = function (startX, startY, speed) {
     this.x = startX;
     this.y = startY;
@@ -5,28 +6,30 @@ var Enemy = function (startX, startY, speed) {
     this.sprite = 'images/enemy-bug.png';
 };
 
+/* Returns a random number to indicate the speed at which the bugs have to move*/
 var randomize = function () {
-    return Math.random() * (150 - 80) + 80;
+    return Math.random() * (200 - 130) + 130;
 };
 
+/* add the update and render functions to the enemy prototype */
 Enemy.prototype = {
     update: function (dt) {
         this.x = this.x + this.speed * dt;
-        if (this.x > 500) {
+        if (this.x > 500) { //when bug leaves screen on the right, let him start again at the left
             this.x = -100;
         }
-
     },
-    render: function () {
+    render: function () { //draw the spirit on the canvas
         ctx.drawImage(Resources.get(this.sprite), this.x, this.y);
     }
 };
 
-var initialX = 200;
-var initialY = 400;
-var maxLeft = 0;
-var maxRight = initialX * 2;
+var initialX = 200; //where the player has to start
+var initialY = 400; //where the player has to start
+var maxLeft = 0; //where he hits the left wall
+var maxRight = initialX * 2; //where he hits the right wall
 
+/* the Player constructor used to create a new player and display its sprite */
 var Player = function () {
     this.x = initialX;
     this.y = initialY;
@@ -35,12 +38,18 @@ var Player = function () {
 
 Player.prototype = {
     update: function (dt) {
-        player.collision();
+        if (this.y < 0) { //if player hits water, he won and player is reset at start
+            this.x = initialX;
+            this.y = initialY;
+            alert("You won!");
+        }
+        this.collision();
     },
     render: function () {
         ctx.drawImage(Resources.get(this.sprite), this.x, this.y);
     },
     handleInput: function (keyPressed) {
+        /* Move the player left, right, top and bottom without it crossing the borders of the canvas */
         switch (keyPressed) {
             case 'left':
                 if (this.x == maxLeft) {
@@ -51,6 +60,7 @@ Player.prototype = {
                 break;
             case 'up':
                 if (this.y < 10) {
+                    ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
                     this.y = -50;
                 } else {
                     this.y = this.y - 90;
@@ -72,6 +82,7 @@ Player.prototype = {
                 break;
         }
     },
+    /* calculate whether the player hits an enemy. If so, the player returns at his initial position */
     collision: function () {
         for (var i = 0; i < allEnemies.length; i++) {
             if (allEnemies[i].x < this.x + 50 &&
@@ -92,8 +103,9 @@ var allEnemies = [enemyOne, enemyTwo, enemyThree];
 var player = new Player();
 
 document.addEventListener('keyup', function (e) {
+    /* The keyCodes and their values */
     var allowedKeys = {
-        37: 'left', //key codes
+        37: 'left',
         38: 'up',
         39: 'right',
         40: 'down'
