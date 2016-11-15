@@ -1,17 +1,14 @@
+var TILE_WIDTH = 101,
+    TILE_HEIGHT = 83;
+
 /* The enemy constructors takes in the X and Y positions and the speed at which it should move */
 var Enemy = function (startX, startY, speed) {
     this.x = startX;
     this.y = startY;
-    this.speed = speed;
+    this.speed = Math.random() * (200 - 130) + 130; /* Returns a random number to indicate the speed at which the bugs have to move*/
     this.sprite = 'images/enemy-bug.png';
 };
 
-/* Returns a random number to indicate the speed at which the bugs have to move*/
-var randomize = function () {
-    return Math.random() * (200 - 130) + 130;
-};
-
-/* add the update and render functions to the enemy prototype */
 Enemy.prototype = {
     update: function (dt) {
         this.x = this.x + this.speed * dt;
@@ -55,7 +52,7 @@ Player.prototype = {
                 if (this.x == maxLeft) {
                     this.x = maxLeft;
                 } else {
-                    this.x = this.x - 100;
+                    this.x = this.x - TILE_WIDTH;
                 }
                 break;
             case 'up':
@@ -63,21 +60,21 @@ Player.prototype = {
                     ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
                     this.y = -50;
                 } else {
-                    this.y = this.y - 90;
+                    this.y = this.y - TILE_HEIGHT;
                 }
                 break;
             case 'right':
                 if (this.x == maxRight) {
                     this.x = maxRight;
                 } else {
-                    this.x = this.x + 100;
+                    this.x = this.x + TILE_WIDTH;
                 }
                 break;
             case 'down':
                 if (this.y == initialY) {
                     this.y = initialY;
                 } else {
-                    this.y = this.y + 90;
+                    this.y = this.y + TILE_HEIGHT;
                 }
                 break;
         }
@@ -96,9 +93,9 @@ Player.prototype = {
     }
 };
 
-var enemyOne = new Enemy(0, 65, randomize());
-var enemyTwo = new Enemy(0, 145, randomize());
-var enemyThree = new Enemy(0, 230, randomize());
+var enemyOne = new Enemy(0, 65);
+var enemyTwo = new Enemy(0, 145);
+var enemyThree = new Enemy(0, 230);
 var allEnemies = [enemyOne, enemyTwo, enemyThree];
 var player = new Player();
 
